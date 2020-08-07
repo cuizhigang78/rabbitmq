@@ -18,6 +18,7 @@ import java.util.concurrent.TimeoutException;
 public class RabbitProducer {
     private static final String EXCHANGE_NAME = "exchange_demo";
     private static final String ROUTING_KEY = "routingkey_demo";
+    private static final String BINDING_KEY = "bindingkey_demo";
     private static final String QUEUE_NAME = "queue_demo";
     private static final String IP_ADDRESS = "127.0.0.1";
     private static final int PORT = 5672;  // RabbitMQ服务端默认端口
@@ -38,7 +39,8 @@ public class RabbitProducer {
         // 创建一个持久化、非排他的、非自动删除的队列
         channel.queueDeclare(QUEUE_NAME, true, false, false, null);
         // 将交换器与队列通过路由键绑定
-        channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, ROUTING_KEY);
+        // 这里应该使用BindingKey而非RoutingKey，但是多数情况下二者是保持一致的，这里是简便的写法
+        channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, BINDING_KEY);
         // 发送一条持久化的消息：hello world!
         String message = "hello world!";
         channel.basicPublish(EXCHANGE_NAME, ROUTING_KEY, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
