@@ -1,0 +1,37 @@
+spring:
+  rabbitmq:
+    ####连接地址
+    host: 127.0.0.1
+    ####端口号
+    port: 5672
+    ####账号
+    username: guest
+    ####密码
+    password: guest
+    ### 虚拟主机  rabbitmq服务器自己创建
+    virtual-host: /rkVirtualHost
+    listener:
+      simple:
+        retry:
+          ####开启消费者（程序出现异常的情况下会）进行重试
+          enabled: true
+          ####最大重试次数  到达最大重试次数会自动进入死信队列，前提是未开启ack手动确认
+          max-attempts: 3
+          ####重试间隔时间
+          initial-interval: 3000
+        #ack 自动ack确认:auto   手动ack确认:manual
+        acknowledge-mode: auto
+server:
+  port: 8080
+
+###模拟演示死信队列
+rk:
+  dlx:
+    exchange: rk_dlx_exchange
+    queue: rk_order_dlx_queue
+    routingKey: dlx
+  ###备胎交换机
+  order:
+    exchange: rk_order_exchange
+    queue: rk_order_queue
+    routingKey: order
